@@ -13,6 +13,8 @@ describe('Todo functionality', () => {
         form: true,
         body: user
       }).then((response) => {
+        console.log(response.body)
+
         uid = response.body._id.$oid
         name = user.firstName + ' ' + user.lastName
         email = user.email
@@ -69,7 +71,35 @@ describe('Todo functionality', () => {
         .should('exist')
     })
 
-    it('should toggle a todo', () => {
+it('should not add a todo when description is empty', () => {
+  cy.get('.remover').then((itemsBefore) => {
+    const countBefore = itemsBefore.length
+
+    cy.get('input[placeholder="Add a new todo item"]')
+      .should('have.value', '')
+
+    cy.get('.remover')
+      .should('have.length', countBefore)
+  })
+})
+
+
+    // it('should toggle a todo', () => {
+    //     cy.contains('Watch video')
+    //     // föräldrarna till "Watch video" har en div med class "checker" som är en custom checkbox, så hitta den och klicka på den
+    //         .parent()
+    //         // hittar i TaskDetail.js
+    //         .find('.checker')
+    //         .click()
+
+    //     cy.contains('Watch video')
+    //         .parent()
+    //         .find('.checker')
+    //         // efter att ha klickat på checkboxen så ska den ha klassen "checked", så kontrollera det
+    //         .should('have.class', 'checked')
+    // })
+
+      it('should toggle a todo twice', () => {
         cy.contains('Watch video')
         // föräldrarna till "Watch video" har en div med class "checker" som är en custom checkbox, så hitta den och klicka på den
             .parent()
@@ -82,6 +112,17 @@ describe('Todo functionality', () => {
             .find('.checker')
             // efter att ha klickat på checkboxen så ska den ha klassen "checked", så kontrollera det
             .should('have.class', 'checked')
+        
+        cy.contains('Watch video')
+          .parent()
+          .find('.checker')
+          .click()
+
+        cy.contains('Watch video')
+        .parent()
+        .find('.checker')
+        .should('not.have.class', 'checked')
+
     })
 
     it('should delete a todo', () => {
@@ -102,5 +143,15 @@ describe('Todo functionality', () => {
     //     }).then((response) => {
     //         cy.log(response.body)
     //     })
+    // })
+
+    // after(function () {
+    //   if (uid) {
+    //     cy.request({
+    //       method: 'DELETE',
+    //       url: `http://localhost:5000/users/${uid}`,
+    //       failOnStatusCode: false
+    //     })
+    //   }
     // })
 })
